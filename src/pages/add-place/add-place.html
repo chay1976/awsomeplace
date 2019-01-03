@@ -78,26 +78,30 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col>
-          <button
-            ion-button
-            icon-left
-            block
-            outline
-            type="button"
-            (click)="onTakePhoto()">
-            <ion-icon name="camera"></ion-icon>
-            Open camera
-          </button>
-          <!-- <label for="file-upload"
-            ion-button
-            icon-left
-            block
-            outline>
-            <ion-icon name="camera"></ion-icon>
-            Open Camera
-          </label> -->
-          <input type="file" accept="image/*;capture=camera" id="file-upload" type="file"/>         
+        <ion-col *ngIf="cameraFound; then btnContent else inputContent">
+          <ng-template #btnContent>
+            <button
+              ion-button
+              icon-left
+              block
+              outline
+              type="button"
+              (click)="onTakePhoto()">
+              <ion-icon name="camera"></ion-icon>
+              Open camera
+            </button>
+          </ng-template>
+          <ng-template #inputContent>
+            <label for="file-upload"
+              ion-button
+              icon-left
+              block
+              outline>
+              <ion-icon name="camera"></ion-icon>
+              Open Camera
+            </label>
+            <input type="file" accept="image/*;capture=camera" id="file-upload" type="file"/>
+          </ng-template>       
           <!-- <video id="video" autoplay>Video stream not available.</video> -->
         </ion-col>
       </ion-row>

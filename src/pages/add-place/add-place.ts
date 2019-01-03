@@ -26,7 +26,8 @@ export class AddPlacePage {
   }
   locationIsSet=false;
   imageUrl="";
-  
+  cameraFound=false;
+
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               private loadingCtrl: LoadingController,
@@ -35,10 +36,18 @@ export class AddPlacePage {
               private camera: Camera,
               private geolocation: Geolocation
               ) {
-  }
-
+              }
   ionViewDidLoad() {
     console.log('ionViewDidLoad AddPlacePage');
+    navigator.mediaDevices.enumerateDevices()
+    .then(gotMedias=>{
+      gotMedias.forEach(function(element){
+        if (element.kind=== 'videoinput'){
+          this.cameraFound=true;
+        }
+      });
+    })
+    .catch();    
     // const video=<HTMLMediaElement>document.getElementById('video');
     
     // navigator.mediaDevices.getUserMedia({
