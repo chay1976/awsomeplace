@@ -78,8 +78,8 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col *ngIf="cameraFound; then btnContent else inputContent">
-          <ng-template #btnContent>
+        <ion-col>
+          <div [hidden]="!hasCordova">
             <button
               ion-button
               icon-left
@@ -90,8 +90,8 @@
               <ion-icon name="camera"></ion-icon>
               Open camera
             </button>
-          </ng-template>
-          <ng-template #inputContent>
+          </div>
+          <div [hidden]="hasCordova">
             <label for="file-upload"
               ion-button
               icon-left
@@ -101,7 +101,7 @@
               Open Camera
             </label>
             <input type="file" accept="image/*;capture=camera" id="file-upload" type="file"/>
-          </ng-template>       
+          </div>       
           <!-- <video id="video" autoplay>Video stream not available.</video> -->
         </ion-col>
       </ion-row>

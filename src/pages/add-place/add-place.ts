@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController, ToastController, LoadingController } from 'ionic-angular';
+import { Component, OnInit } from '@angular/core';
+import { Platform, IonicPage, NavController, NavParams, ModalController, ToastController, LoadingController } from 'ionic-angular';
 import { NgForm } from '@angular/forms';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Camera } from '@ionic-native/camera';
@@ -19,35 +19,44 @@ import { SetLocationPage } from '../set-location/set-location';
   selector: 'page-add-place',
   templateUrl: 'add-place.html',
 })
-export class AddPlacePage {
+export class AddPlacePage implements OnInit {
   location: Location={
     lat: 40.7624324,
     lng: -73.9759827
   }
   locationIsSet=false;
   imageUrl="";
-  cameraFound=false;
-
+  hasCordova=false;
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               private loadingCtrl: LoadingController,
               private modalCtrl: ModalController,
               private toastCtrl: ToastController,
               private camera: Camera,
-              private geolocation: Geolocation
+              private geolocation: Geolocation,
+              private platform: Platform
               ) {
+         
               }
+  ngOnInit(){
+    
+    // navigator.mediaDevices.enumerateDevices()
+    // .then(gotMedias=>{
+    //   gotMedias.forEach((element)=>{
+    //     console.log(element.kind);
+    //     if (element.kind=='videoinput'){
+    //       this.cameraFound=true;
+    //     }
+    //   });
+    //   console.log(this.cameraFound);
+    // })
+    // .catch();
+    if (this.platform.is('cordova')){
+      this.hasCordova=true;
+    }
+  }
   ionViewDidLoad() {
-    console.log('ionViewDidLoad AddPlacePage');
-    navigator.mediaDevices.enumerateDevices()
-    .then(gotMedias=>{
-      gotMedias.forEach(function(element){
-        if (element.kind=== 'videoinput'){
-          this.cameraFound=true;
-        }
-      });
-    })
-    .catch();    
+       
     // const video=<HTMLMediaElement>document.getElementById('video');
     
     // navigator.mediaDevices.getUserMedia({
@@ -63,7 +72,6 @@ export class AddPlacePage {
   }
 
   onSubmit(form: NgForm){
-    
   }
 
   onOpenMap(){
@@ -80,7 +88,6 @@ export class AddPlacePage {
         }
       }
     );
-    
   }
 
   onLocate(){
@@ -102,7 +109,7 @@ export class AddPlacePage {
         (error)=>{
           loader.dismiss();
           const toast=this.toastCtrl.create({
-            message: 'Could get location, please pick it manually!',
+            message: error.message,
             duration: 2500
           });
           toast.present();
