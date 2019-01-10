@@ -6,6 +6,7 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Camera } from '@ionic-native/camera';
 import { File } from '@ionic-native/file';
+import { NativeStorage } from '@ionic-native/native-storage';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
@@ -13,6 +14,7 @@ import { AgmCoreModule } from '@agm/core';
 import { PlacePage } from '../pages/place/place';
 import { SetLocationPage } from '../pages/set-location/set-location';
 import { AddPlacePage } from '../pages/add-place/add-place';
+import { PlacesService } from '../service/places';
 
 @NgModule({
   declarations: [
@@ -43,7 +45,9 @@ import { AddPlacePage } from '../pages/add-place/add-place';
     Geolocation,
     Camera,
     File,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    NativeStorage,
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    PlacesService
   ]
 })
 export class AppModule {}

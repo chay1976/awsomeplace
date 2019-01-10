@@ -100,14 +100,14 @@
               <ion-icon name="camera"></ion-icon>
               Open Camera
             </label>
-            <input type="file" accept="image/*;capture=camera" id="file-upload" type="file"/>
+            <input type="file" accept="image/*;capture=camera" id="file-upload" type="file" (change)="onFileSelected()"/>
           </div>       
           <!-- <video id="video" autoplay>Video stream not available.</video> -->
         </ion-col>
       </ion-row>
       <ion-row *ngIf="imageUrl !=''">
         <ion-col>
-          <img [src]="imageUrl">
+          <img [src]="imageUrl" [alt]="imageUrl" id="pic">
         </ion-col>
       </ion-row>
       <ion-row>
@@ -116,7 +116,7 @@
           color="secondary"
           block
           type="submit"
-          [disabled]="!f.valid ||!locationIsSet||imageUrl==''">
+          [disabled]="!f.valid ||!locationIsSet">
           Add this Place
         </button>
       </ion-row>

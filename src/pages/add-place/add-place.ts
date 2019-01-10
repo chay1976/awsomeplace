@@ -3,9 +3,11 @@ import { Platform, IonicPage, NavController, NavParams, ModalController, ToastCo
 import { NgForm } from '@angular/forms';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Camera } from '@ionic-native/camera';
+import { File } from '@ionic-native/file';
 
 import { Location } from '../../models/location';
 import { SetLocationPage } from '../set-location/set-location';
+import { PlacesService } from '../../service/places';
 
 /**
  * Generated class for the AddPlacePage page.
@@ -34,7 +36,9 @@ export class AddPlacePage implements OnInit {
               private toastCtrl: ToastController,
               private camera: Camera,
               private geolocation: Geolocation,
-              private platform: Platform
+              private platform: Platform,
+              private placesService: PlacesService,
+              private file: File
               ) {
          
               }
@@ -72,6 +76,15 @@ export class AddPlacePage implements OnInit {
   }
 
   onSubmit(form: NgForm){
+    this.placesService.addPlace(form.value.title,form.value.description,this.location,this.imageUrl);
+    form.reset();
+    this.location={
+      lat: 40.7624324,
+      lng: -73.9759827
+    }
+    this.locationIsSet=false;
+    this.imageUrl="";
+    this.hasCordova=false;    
   }
 
   onOpenMap(){
@@ -110,7 +123,7 @@ export class AddPlacePage implements OnInit {
           loader.dismiss();
           const toast=this.toastCtrl.create({
             message: error.message,
-            duration: 2500
+            duration: 5000
           });
           toast.present();
         }
@@ -119,18 +132,48 @@ export class AddPlacePage implements OnInit {
 
   onTakePhoto(){
     this.camera.getPicture({
+      destinationType: this.camera.DestinationType.NATIVE_URI,
       encodingType: this.camera.EncodingType.JPEG,
       correctOrientation: true
     })
       .then(
         (imageData)=>{
-          console.log(imageData);
+          const currentName=imageData.substring(imageData.lastIndexOf('/')+1);
+          const path=imageData.substring(0,imageData.lastIndexOf('/')+1);
+          const newFileName = new Date().getUTCMilliseconds() + '.jpg';
+          this.file.moveFile(path,currentName,this.file.dataDirectory,newFileName)
+            .then(()=>{
+              this.file.readAsDataURL(this.file.dataDirectory,newFileName)
+                .then(res=>this.imageUrl=res);
+              this.camera.cleanup();
+              this.file.removeFile(path,currentName);
+            })
+            .catch(err=>{
+              const toast=this.toastCtrl.create({
+                message: err,
+                duration: 2500
+              });
+              toast.present();
+              this.camera.cleanup();
+              this.imageUrl='';
+              this.file.removeFile(path,currentName);
+            });
         }
       )
       .catch(
         (err)=>{
-          console.log(err);
+          const toast=this.toastCtrl.create({
+            message: err,
+            duration: 2500
+          });
+          toast.present();
+          this.camera.cleanup();
+          this.imageUrl='';
         }
       );
+  }
+
+  onFileSelected(){
+    const i=<HTMLInputElement>document.getElementById("file-upload");
   }
 }
