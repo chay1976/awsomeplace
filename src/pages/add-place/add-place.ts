@@ -27,7 +27,8 @@ export class AddPlacePage implements OnInit {
     lng: -73.9759827
   }
   locationIsSet=false;
-  imageUrl="";
+  imageDataUrl="";
+  imageUrl=""
   hasCordova=false;
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
@@ -83,7 +84,8 @@ export class AddPlacePage implements OnInit {
       lng: -73.9759827
     }
     this.locationIsSet=false;
-    this.imageUrl="";
+    this.imageDataUrl="";
+    this.imageUrl=""
     this.hasCordova=false;    
   }
 
@@ -144,7 +146,10 @@ export class AddPlacePage implements OnInit {
           this.file.moveFile(path,currentName,this.file.dataDirectory,newFileName)
             .then(()=>{
               this.file.readAsDataURL(this.file.dataDirectory,newFileName)
-                .then(res=>this.imageUrl=res);
+                .then((res)=>{
+                  this.imageDataUrl=res;
+                  this.imageUrl=newFileName;
+                });
               this.camera.cleanup();
               this.file.removeFile(path,currentName);
             })
@@ -155,6 +160,7 @@ export class AddPlacePage implements OnInit {
               });
               toast.present();
               this.camera.cleanup();
+              this.imageDataUrl='';
               this.imageUrl='';
               this.file.removeFile(path,currentName);
             });
@@ -169,6 +175,7 @@ export class AddPlacePage implements OnInit {
           toast.present();
           this.camera.cleanup();
           this.imageUrl='';
+          this.imageDataUrl='';
         }
       );
   }

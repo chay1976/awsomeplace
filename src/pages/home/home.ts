@@ -26,6 +26,7 @@ export class HomePage implements OnInit{
 
   ionViewWillEnter(){
     this.places=this.placesService.loadPlaces();
+    this.placesService.listAll();
   }
   
   onAddPlace(){
@@ -36,4 +37,9 @@ export class HomePage implements OnInit{
     const modal=this.modalCtrl.create(PlacePage,{place:place,index:index});
     modal.present();
   }
+
+  dataUrltransform(index: number){
+    return this.placesService.getDataUrl(index);  
+  }
+
 }
