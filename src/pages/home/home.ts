@@ -21,12 +21,13 @@ export class HomePage implements OnInit{
       .then(
         (places: Place[])=>this.places=places
       )
-      .catch();
+      .catch(
+        // err=>alert("001:"+err.message)
+        );
   }
 
   ionViewWillEnter(){
     this.places=this.placesService.loadPlaces();
-    this.placesService.listAll();
   }
   
   onAddPlace(){
@@ -38,8 +39,7 @@ export class HomePage implements OnInit{
     modal.present();
   }
 
-  dataUrltransform(index: number){
-    return this.placesService.getDataUrl(index);  
+  getDataUrl(index:number){
+    return this.placesService.dataUrl[index];
   }
-
 }

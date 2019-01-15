@@ -18,12 +18,15 @@ import { PlacesService } from '../../service/places';
 export class PlacePage {
   place:Place;
   index:number;
+  dataUrl:string;
+
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
     private viewCtrl: ViewController,
     private placesService: PlacesService) {
     this.place=navParams.get("place");
     this.index=navParams.get("index");
+    this.dataUrl=this.placesService.dataUrl[this.index];
   }
 
   ionViewDidLoad() {

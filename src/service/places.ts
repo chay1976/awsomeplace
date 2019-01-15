@@ -7,16 +7,20 @@ import { File } from "@ionic-native/file";
 @Injectable()
 export class PlacesService {
     private places: Place[]=[];
-
+    public dataUrl: string[]=[];
+    public length: number;
     constructor(private storage: NativeStorage,
                 private file: File){
     }
+    
     addPlace(title: string, 
             description: string,
             location: Location,
             imageUrl: string){
                 const place = new Place(title, description, location, imageUrl);
                 this.places.push(place);
+                this.file.readAsDataURL(this.file.dataDirectory,place.imageUrl)
+                .then(res=>this.dataUrl.push(res));               
                 this.storage.setItem('places', this.places)
                     .then()
                     .catch(
@@ -27,7 +31,12 @@ export class PlacesService {
             }
 
     loadPlaces(){
-        this.fetchPlaces()
+        this.fetchPlaces();
+        this.length=this.places.length;
+        this.places.forEach(place=>{
+            this.file.readAsDataURL(this.file.dataDirectory,place.imageUrl)
+                .then(res=>this.dataUrl.push(res));
+        });
         return this.places.slice();
     }
 
@@ -39,49 +48,45 @@ export class PlacesService {
                     return this.places;
                 }
             )
-            .catch(
-                err=>console.log(err)
-            );
+            .catch(err=>alert("002:"+err.message));
     }
 
     deletePlace(index: number){
         const place=this.places[index];
         this.places.splice(index,1);
+        this.dataUrl.splice(index,1);
         this.storage.setItem('places', this.places)
             .then(()=>{
                 if (place.imageUrl!==''){
                     this.removeFile(place);
                 }
             })
-            .catch((err)=>console.log(err.message));
+            .catch(err=>alert(err.message));
     }
 
-    getDataUrl(index: number){
-        this.file.readAsDataURL(this.file.dataDirectory,this.places[index].imageUrl)
-            .then((res)=>{return res});
-    }
     private removeFile(place: Place){
         this.file.removeFile(this.file.dataDirectory,place.imageUrl)
-            .then(()=>alert('removed file'))
+            .then(()=>alert(place.imageUrl+' removed'))
             .catch((err)=>{
-                alert(err.message);
-                alert(place.imageUrl);
-                this.addPlace(place.title,place.description,place.location,place.imageUrl);
+                alert("004:"+err.message);
+                alert("005:"+place.imageUrl);
             });
     }
 
     listAll(){
-        this.file.listDir(this.file.dataDirectory,'files')
+        let fileList: string[]=[];
+        return this.file.listDir(this.file.dataDirectory,'files')
             .then((files)=>{
                 for (let file of files){
-                    alert(file.name);
-                    // if (file.name.includes(".jpg")){
-                    //     file.remove(()=>{
-                    //         alert("delete"+file.name);
-                    //     },(err)=>{alert(err.message)});
-                    // }
+                    if (file.name.includes(".jpg")){
+                        fileList.push(file.name);
+                        // file.remove(()=>{
+                        //     alert("delete"+file.name);
+                        // },(err)=>{alert(err.message)});
+                    }
                 }
+                return fileList;
             })
-            .catch();
+            .catch(err=>alert("006:"+err.message));
     }
 }
