@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Platform, IonicPage, NavController, NavParams, ModalController, ToastController, LoadingController } from 'ionic-angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Platform, IonicPage, NavController, NavParams, ModalController, ToastController, LoadingController, Navbar } from 'ionic-angular';
 import { NgForm } from '@angular/forms';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Camera } from '@ionic-native/camera';
@@ -22,6 +22,8 @@ import { PlacesService } from '../../service/places';
   templateUrl: 'add-place.html',
 })
 export class AddPlacePage implements OnInit {
+  @ViewChild(Navbar) navbar: Navbar;
+
   location: Location={
     lat: 40.7624324,
     lng: -73.9759827
@@ -74,6 +76,9 @@ export class AddPlacePage implements OnInit {
     //     }
     //   )
     //   .catch(console.error);
+
+    this.navbar.setBackButtonText('Back');
+  // this.viewCtrl.setBackButtonText('Back');
   }
 
   onSubmit(form: NgForm){
